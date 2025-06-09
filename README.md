@@ -198,6 +198,10 @@ Input: anagrafe.xlsx (colonne "Data Nascita", "Data Assunzione")
 - Assicurati che le colonne selezionate contengano effettivamente date
 - Controlla la console per messaggi di debug dettagliati
 
+**"UserWarning: Boolean Series key will be reindexed"**
+- Questo warning è stato risolto nelle versioni recenti
+- Se persiste, aggiorna alle ultime dipendenze con `pip install -r requirements.txt --upgrade`
+
 ### Limitazioni
 
 - **Fogli Excel**: Nomi limitati a 31 caratteri (limitazione Excel)

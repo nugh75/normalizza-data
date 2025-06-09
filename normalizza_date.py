@@ -195,11 +195,19 @@ def elabora_foglio(df, colonne_selezionate, colonna_ordinamento, ordina_date, fo
             
             # Applichiamo il formato di output scelto per questa colonna
             formato_selezionato = formati_output[formato_output]
-            df_temp[colonna_date] = df_temp[f'_data_oggetto_{colonna_date}'].apply(
-                lambda x: x.strftime(formato_selezionato) if pd.notna(x) else df_temp.loc[df_temp[f'_data_oggetto_{colonna_date}'] == x, f'_data_formattata_{colonna_date}'].values[0]
-                if isinstance(df_temp.loc[df_temp[f'_data_oggetto_{colonna_date}'] == x, f'_data_formattata_{colonna_date}'].values, np.ndarray) and len(df_temp.loc[df_temp[f'_data_oggetto_{colonna_date}'] == x, f'_data_formattata_{colonna_date}'].values) > 0
-                else str(x)
-            )
+            
+            # Funzione helper per applicare il formato
+            def applica_formato(row):
+                data_obj = row[f'_data_oggetto_{colonna_date}']
+                data_formattata = row[f'_data_formattata_{colonna_date}']
+                
+                if pd.notna(data_obj):
+                    return data_obj.strftime(formato_selezionato)
+                else:
+                    # Se non abbiamo un oggetto datetime valido, usiamo la stringa formattata
+                    return data_formattata if pd.notna(data_formattata) else str(row[colonna_date])
+            
+            df_temp[colonna_date] = df_temp.apply(applica_formato, axis=1)
         else:
             # Fallback alla vecchia logica
             df_temp[colonna_date] = df_temp[colonna_date].apply(lambda x: normalizza_data(x, True))
